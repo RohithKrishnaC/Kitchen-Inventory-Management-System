@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Kitchen Inventory Management System
 
 A full-stack web application built with Python (Flask) and SQLite to help you track perishable and non-perishable kitchen items, automated low stock alerts, and downloadable shopping lists.
