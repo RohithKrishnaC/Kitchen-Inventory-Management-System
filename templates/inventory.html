@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Inventory - KitchenSync{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-4">
+    <h2>Your Inventory</h2>
+    <a href="{{ url_for('add_item') }}" class="btn btn-primary">+ Add New Item</a>
+</div>
+
+{% if not items %}
+<div class="card text-center" style="padding: 4rem 2rem;">
+    <h3 style="color: var(--text-muted); margin-bottom: 1rem;">Your kitchen inventory is empty</h3>
+    <a href="{{ url_for('add_item') }}" class="btn btn-primary">Add your first item</a>
+</div>
+{% else %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.quantity }} {{ item.unit }}</td>
+                <td>{{ item.type | title }}</td>
+                <td>
+                    {% if 'EXPIRED' in item.status %}
+                        <span class="badge badge-expired">Expired</span>
+                    {% elif 'EXPIRING SOON' in item.status %}
+                        <span class="badge badge-soon">Expiring Soon</span>
+                    {% elif 'LOW STOCK' in item.status %}
+                        <span class="badge badge-low">Low Stock</span>
+                    {% else %}
+                        <span class="badge badge-normal">Normal</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <form action="{{ url_for('use_item', item_id=item.id) }}" method="POST" class="action-form">
+                            <input type="number" step="0.01" name="amount" class="action-input" required min="0.01" max="{{ item.quantity }}" placeholder="Use">
+                            <button type="submit" class="btn btn-secondary" style="padding: 0.35rem 0.5rem; font-size: 0.8rem;">Use</button>
+                        </form>
+                        <form action="{{ url_for('refill_item', item_id=item.id) }}" method="POST" class="action-form">
+                            <input type="number" step="0.01" name="amount" class="action-input" required min="0.01" placeholder="Add">
+                            <button type="submit" class="btn btn-success" style="padding: 0.35rem 0.5rem; font-size: 0.8rem;">Refill</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Add Item - KitchenSync{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>Add New Item</h2>
+    <form method="POST" action="{{ url_for('add_item') }}" class="mt-4">
+        <div class="form-group">
+            <label class="form-label" for="name">Item Name</label>
+            <input type="text" id="name" name="name" class="form-control" required placeholder="e.g. Rice, Milk, Tomatoes">
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <div class="form-group" style="flex: 1;">
+                <label class="form-label" for="quantity">Quantity</label>
+                <input type="number" step="0.01" id="quantity" name="quantity" class="form-control" required min="0">
+            </div>
+            
+            <div class="form-group" style="flex: 1;">
+                <label class="form-label" for="unit">Unit</label>
+                <select id="unit" name="unit" class="form-control" required>
+                    <option value="kg">Kilograms (kg)</option>
+                    <option value="litre">Litres (L)</option>
+                    <option value="pieces">Pieces / Items</option>
+                    <option value="grams">Grams (g)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="type">Item Type</label>
+            <select id="type" name="type" class="form-control" required onchange="toggleFields()">
+                <option value="perishable">Perishable (e.g. Vegetables, Dairy)</option>
+                <option value="non-perishable">Non-Perishable (e.g. Rice, Spices)</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="expiry_group">
+            <label class="form-label" for="expiry_date">Expiry Date</label>
+            <input type="date" id="expiry_date" name="expiry_date" class="form-control">
+        </div>
+        
+        <div class="form-group" id="shelf_life_group" style="display: none;">
+            <label class="form-label" for="shelf_life">Shelf Life (Months)</label>
+            <input type="number" id="shelf_life" name="shelf_life" class="form-control" placeholder="e.g. 12" min="1">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Save Item</button>
+    </form>
+</div>
+
+<script>
+function toggleFields() {
+    const type = document.getElementById('type').value;
+    const expiryGroup = document.getElementById('expiry_group');
+    const shelfLifeGroup = document.getElementById('shelf_life_group');
+    const expiryInput = document.getElementById('expiry_date');
+    
+    if (type === 'perishable') {
+        expiryGroup.style.display = 'block';
+        shelfLifeGroup.style.display = 'none';
+        expiryInput.required = true;
+    } else {
+        expiryGroup.style.display = 'none';
+        shelfLifeGroup.style.display = 'block';
+        expiryInput.required = false;
+        expiryInput.value = '';
+    }
+}
+// Initialize state on load
+document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
+{% endblock %}

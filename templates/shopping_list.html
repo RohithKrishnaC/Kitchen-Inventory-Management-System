@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Shopping List - KitchenSync{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-4">
+    <h2>Shopping List</h2>
+    <div>
+        <a href="{{ url_for('generate_pdf') }}" class="btn btn-primary">
+            Download PDF
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+        This list is automatically generated based on items that are low in stock or expiring soon.
+    </p>
+
+    {% if not items %}
+    <div class="text-center" style="padding: 2rem;">
+        <h3 style="color: var(--text-muted);">Your shopping list is currently empty.</h3>
+        <p>All your items are in a healthy stock level.</p>
+    </div>
+    {% else %}
+    <div class="table-container" style="box-shadow: none; border: 1px solid var(--border);">
+        <table>
+            <thead>
+                <tr>
+                    <th>Need to Buy</th>
+                    <th>Current Quantity</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td><strong>{{ item.name }}</strong></td>
+                    <td>{{ item.quantity }} {{ item.unit }}</td>
+                    <td>
+                        {% if 'EXPIRED' in item.status %}
+                            <span class="badge badge-expired">Expired</span>
+                        {% elif 'EXPIRING SOON' in item.status %}
+                            <span class="badge badge-soon">Expiring Soon</span>
+                        {% elif 'LOW STOCK' in item.status %}
+                            <span class="badge badge-low">Low Stock</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

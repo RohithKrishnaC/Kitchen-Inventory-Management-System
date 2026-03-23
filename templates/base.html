@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kitchen Inventory{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('home') }}">Kitchen<span class="highlight">Sync</span></a>
+        </div>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('dashboard') }}" class="nav-item">Dashboard</a>
+                <a href="{{ url_for('inventory') }}" class="nav-item">Inventory</a>
+                <a href="{{ url_for('history') }}" class="nav-item">History</a>
+                <a href="{{ url_for('add_item') }}" class="nav-item">Add Item</a>
+                <a href="{{ url_for('shopping_list') }}" class="nav-item">Shopping List</a>
+                <div class="nav-divider"></div>
+                <span class="user-greeting">Hi, {{ session.get('user_name') }}</span>
+                <a href="{{ url_for('logout') }}" class="nav-btn btn-secondary">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="nav-btn btn-primary">Login</a>
+                <a href="{{ url_for('register') }}" class="nav-btn btn-secondary">Register</a>
+            {% endif %}
+        </div>
+        <div class="mobile-menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Simple mobile menu toggle
+        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Auto-hide flash messages
+        setTimeout(function() {
+            const flashes = document.querySelectorAll('.alert');
+            flashes.forEach(f => {
+                f.style.opacity = '0';
+                setTimeout(() => f.remove(), 300);
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

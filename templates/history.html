@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Usage History - KitchenSync{% endblock %}
+
+{% block content %}
+<div class="flex-between mb-4">
+    <h2>Usage History</h2>
+    <a href="{{ url_for('inventory') }}" class="btn btn-secondary">Back to Inventory</a>
+</div>
+
+<div class="card">
+    {% if logs %}
+    <div class="table-container" style="margin-top: 0;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Item Name</th>
+                    <th>Amount Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.used_at }}</td>
+                    <td><strong>{{ log.item_name }}</strong></td>
+                    <td>{{ log.amount_used }} {{ log.unit }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-state" style="text-align: center; padding: 2rem;">No usage history recorded yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
